@@ -11,6 +11,7 @@ class AddUserIdAndEmailToStatusesTable extends Migration
         Schema::table('statuses', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id')->nullable()->after('id');
             $table->string('email')->nullable()->after('user_id');
+            $table->string('name')->nullable()->after('email')->nullable;
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
     }
