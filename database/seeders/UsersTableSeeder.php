@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UsersTableSeeder extends Seeder
 {
@@ -24,8 +24,11 @@ class UsersTableSeeder extends Seeder
                 'password' => Hash::make('#@1Password'),
                 'role' => 'Admin',
                 'lastlogin' => now(),
+                'photo_url' => null,
+                'agree' => true,
+                'phone' => '+256774542872',
+                'dateOfBirth' => '1990-01-01',
             ],
-
             // Add additional users as needed
         ];
 

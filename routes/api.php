@@ -16,6 +16,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->get('/user', [AuthController::class, 'checkLoginStatus']);
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/third-party-login-auth', [AuthController::class, 'thirdPartyLoginAuthentication'])->name('thirdPartyLoginAuthentication');
+Route::post('/third-party-register-auth', [AuthController::class, 'thirdPartyRegisterAuthentication'])->name('thirdPartyRegisterAuthentication');
 
 Route::post('forgot-password', [PasswordResetController::class, 'forgetPassword']);
 Route::get('/reset-password', [PasswordResetController::class, 'handleresetPasswordLoad']);

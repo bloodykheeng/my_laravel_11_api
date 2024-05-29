@@ -6,7 +6,7 @@ use Spatie\ModelStatus\Status;
 
 class StatusUpdate extends Status
 {
-    protected $fillable = ['user_id', 'email']; // Ensure user_id and email are mass assignable
+    protected $fillable = ['user_id', 'email', 'user_name']; // Ensure user_id and email are mass assignable
 
     public static function boot()
     {
@@ -16,6 +16,7 @@ class StatusUpdate extends Status
             if (empty($statusUpdate->user_id) && auth()->check()) {
                 $statusUpdate->user_id = auth()->id() ?? null;
                 $statusUpdate->email = auth()->user()->email ?? null; // Set email from the authenticated user
+                $statusUpdate->user_name = auth()->user()->name ?? null;
             }
         });
     }

@@ -26,26 +26,21 @@ class RolesAndPermissionsSeeder extends Seeder
                 'view roles',
                 'add permissions on roles',
                 'delete permissions on roles',
-                'view permissions'
+                'view permissions',
             ],
-            'Inspector' => [
+            'Health Facility Manager' => [
                 'view',
                 'create',
                 'update',
                 'delete',
             ],
-            'Vendor' => [
+            'Patient' => [
                 'view',
                 'create',
                 'update',
                 'delete',
             ],
-            'Buyer' => [
-                'view',
-                'create',
-                'update',
-                'delete',
-            ],
+
         ];
 
         $this->createRolesAndPermissions($rolesWithPermissions);

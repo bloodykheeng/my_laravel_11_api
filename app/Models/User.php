@@ -3,12 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -26,6 +26,9 @@ class User extends Authenticatable
         'status',
         'lastlogin',
         'photo_url',
+        'agree',
+        'phone',
+        'dateOfBirth',
     ];
 
     /**
@@ -51,18 +54,15 @@ class User extends Authenticatable
         ];
     }
 
-
-
-    public function vendors()
-    {
-        return $this->hasOne(UserVendor::class, 'user_id');
-    }
-
+    // public function vendors()
+    // {
+    //     return $this->hasOne(UserVendor::class, 'user_id');
+    // }
 
     protected static function booted()
     {
-        static::creating(function ($car) {
-            $car->slug = static::uniqueSlug($car->name);
+        static::creating(function ($user) {
+            $user->slug = static::uniqueSlug($user->name);
         });
     }
 
@@ -85,5 +85,19 @@ class User extends Authenticatable
 
         // Fallback if reached 1000 iterations (should ideally never happen)
         return "{$baseSlug}-" . uniqid();
+    }
+
+    public function setEmailAttribute($value)
+    {
+        if (empty($value)) { // will check for empty string
+            $this->attributes['email'] = null;
+        } else {
+            $this->attributes['email'] = $value;
+        }
+    }
+
+    public function providers()
+    {
+        return $this->hasMany(ThirdPartyAuthProvider::class, 'user_id', 'id');
     }
 }

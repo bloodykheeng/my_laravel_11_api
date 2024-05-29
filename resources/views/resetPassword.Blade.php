@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,16 +77,17 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <h1>Confidential</h1>
-        <h3>Ministry of Water and Environment Uganda</h3>
+        <h3>Health Star</h3>
     </div>
 
     <div class="form-container">
-        @if(isset($validator) && $validator->fails())
+        @if (isset($validator) && $validator->fails())
             <ul class="error-message">
-                @foreach($validator->errors()->all() as $error)
+                @foreach ($validator->errors()->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
@@ -100,7 +102,8 @@
 
             <div class="form-group">
                 <label for="password_confirmation">Confirm Password</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Confirm Password">
+                <input type="password" id="password_confirmation" name="password_confirmation"
+                    placeholder="Confirm Password">
             </div>
 
             <input type="hidden" name="id" value="{{ $user->id }}">
@@ -109,4 +112,5 @@
         </form>
     </div>
 </body>
+
 </html>

@@ -15,14 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('slug')->unique()->index();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('status')->nullable()->index();
+            $table->string('status')->nullable()->default("deactive")->index();
             $table->timestamp('lastlogin')->nullable()->useCurrent();
             $table->string('photo_url')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            // New fields
+            $table->boolean('agree')->default(false);
+            $table->string('phone');
+            $table->date('dateOfBirth')->nullable(); // This is correct
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
