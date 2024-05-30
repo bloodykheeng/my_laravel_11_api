@@ -2,29 +2,24 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
-
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
-
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
-{
-    public function index(Request $request)
+{public function index(Request $request)
     {
+        // Uncomment and use this if you need authorization check
         // if (!Auth::user()->can('view users')) {
         //     return response()->json(['message' => 'Unauthorized'], 403);
         // }
-
+    
         $query = User::query();
-
+    
         // Check if vendor_id is provided and not null
         if ($request->has('vendor_id') && $request->vendor_id !== null) {
             // Filter users by the provided vendor_id
@@ -32,32 +27,46 @@ class UserController extends Controller
                 $query->where('vendor_id', $request->vendor_id);
             });
         }
-
+    
         // Filter by role if provided
         if ($request->has('role') && $request->role !== null) {
             $query->role($request->role); // This uses the role scope provided by Spatie's permission package
         }
-
-        // Retrieve all users with their one-to-one relationships
-        $users = $query->with(["vendors.vendor"])->get();
-
-        // Adding role names to each user
-        $users->transform(function ($user) {
+    
+        // Apply search filter (if provided)
+        $search = $request->query('search');
+        if ($search) {
+            $query->where(function ($subQuery) use ($search) {
+                $subQuery->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+    
+        // Pagination
+        $perPage = $request->query('per_page', 10); // Default to 10 per page
+        $page = $request->query('page', 1); // Default to first page
+    
+        $paginatedUsers = $query->paginate($perPage);
+    
+        // Adding role names and permissions to each user in the data collection
+        $paginatedUsers->getCollection()->transform(function ($user) {
             $user->role = $user->getRoleNames()->first() ?? "";
+            $user->permissions = $user->getAllPermissions()->pluck('name') ?? null;
             return $user;
         });
-
-        return response()->json($users);
+    
+        // Return the paginated response
+        return response()->json($paginatedUsers);
     }
-
-
+    
     public function show($id)
     {
         // if (!Auth::user()->can('view user')) {
         //     return response()->json(['message' => 'Unauthorized'], 403);
         // }
 
-        $user = User::with(["vendors.vendor"])->findOrFail($id);
+        // $user = User::with(["vendors.vendor"])->findOrFail($id);
+        $user = User::findOrFail($id);
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
@@ -69,7 +78,6 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-
     public function store(Request $request)
     {
         // Check permission
@@ -79,12 +87,14 @@ class UserController extends Controller
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'status' => 'required|string|max:255',
+            'dateOfBirth' => 'required|date',
             'lastlogin' => 'nullable|date',
             'password' => 'required|string|min:8',
             'role' => 'required|exists:roles,name',
-            'vendor_id' => 'nullable|exists:vendors,id', // validate vendor_id
+            // 'vendor_id' => 'nullable|exists:vendors,id', // validate vendor_id
             'photo' => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Expect a file for the photo
         ]);
 
@@ -100,14 +110,14 @@ class UserController extends Controller
             // Create user
             $user = User::create([
                 'name' => $validatedData['name'],
+                'phone' => $validatedData['phone'],
                 'email' => $validatedData['email'],
+                'dateOfBirth' => $validatedData['dateOfBirth'],
                 'status' => $validatedData['status'],
                 'lastlogin' => $validatedData['lastlogin'] ?? now(),
                 'password' => Hash::make($validatedData['password']),
                 'photo_url' => $photoUrl,
             ]);
-
-
 
             // Sync the user's role
             $user->syncRoles([$validatedData['role']]);
@@ -117,10 +127,9 @@ class UserController extends Controller
             // $user->permissions = $permissions;
 
             // Handle UserVendor relationship
-            if (isset($validatedData['vendor_id'])) {
-                $user->vendors()->create(['vendor_id' => $validatedData['vendor_id']]);
-            }
-
+            // if (isset($validatedData['vendor_id'])) {
+            //     $user->vendors()->create(['vendor_id' => $validatedData['vendor_id']]);
+            // }
 
             DB::commit();
             return response()->json(['message' => 'User created successfully!', 'user' => $user], 201);
@@ -143,11 +152,6 @@ class UserController extends Controller
         return '/' . $folderPath . '/' . $fileName;
     }
 
-
-
-
-
-
     public function update(Request $request, $id)
     {
 
@@ -158,13 +162,14 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'phone' => 'required|string|max:255',
             'status' => 'required|string|max:255',
+            'dateOfBirth' => 'required|date',
             'lastlogin' => 'nullable|date',
             'photo' => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Validation for photo
             'role' => 'sometimes|exists:roles,name',
-            'vendor_id' => 'nullable|exists:vendors,id',
+            // 'vendor_id' => 'nullable|exists:vendors,id',
         ]);
-
 
         $user = User::find($id);
         if (!$user) {
@@ -189,7 +194,9 @@ class UserController extends Controller
         try {
             $user->update([
                 'name' => $validatedData['name'],
+                'phone' => $validatedData['phone'],
                 'email' => $validatedData['email'],
+                'dateOfBirth' => $validatedData['dateOfBirth'],
                 'status' => $validatedData['status'],
                 'lastlogin' => $validatedData['lastlogin'] ?? now(),
                 'photo_url' => $photoUrl,
@@ -217,14 +224,7 @@ class UserController extends Controller
         }
     }
 
-
-
-
-
-
     // ========================== destroy ====================
-
-
 
     public function destroy($id)
     {

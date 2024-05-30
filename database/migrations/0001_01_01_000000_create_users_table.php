@@ -26,7 +26,7 @@ return new class extends Migration
 
             // New fields
             $table->boolean('agree')->default(false);
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->date('dateOfBirth')->nullable(); // This is correct
         });
 
