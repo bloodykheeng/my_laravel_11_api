@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
-
 class PasswordResetController extends Controller
 {
     public function forgetPassword(Request $request)
@@ -38,7 +37,7 @@ class PasswordResetController extends Controller
 
                 PasswordReset::updateOrCreate(['email' => $request->email], [
                     'email' => $request->email,
-                    'token' => $token, 'created' => $datetime
+                    'token' => $token, 'created' => $datetime,
                 ]);
 
                 return response()->json(['success' => true, 'message' => 'Please check your mail to reset your password']);
@@ -52,9 +51,6 @@ class PasswordResetController extends Controller
 
     //     handleresetPasswordLoad
     // handlestoringNewPassword
-
-
-
 
     public function handleResetPasswordLoad(Request $request)
     {
@@ -83,9 +79,6 @@ class PasswordResetController extends Controller
         return view('404');
     }
 
-
-
-
     public function handlestoringNewPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -93,7 +86,7 @@ class PasswordResetController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return View::make('resetPassword')->with(['validator' => $validator, 'user' => (object)['id' => $request->id]]);
+            return View::make('resetPassword')->with(['validator' => $validator, 'user' => (object) ['id' => $request->id]]);
         }
 
         $user = User::find($request->id);
