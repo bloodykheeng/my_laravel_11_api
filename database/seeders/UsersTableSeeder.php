@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+// to run this file type this in terminal
+// php artisan db:seed --class=UsersTableSeeder
+
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -27,7 +30,8 @@ class UsersTableSeeder extends Seeder
                 'photo_url' => null,
                 'agree' => true,
                 'phone' => '+256774542872',
-                'dateOfBirth' => '1990-01-01',
+                'gender' => 'male',
+                'date_of_birth' => '1990-01-01',
             ],
             // Add additional users as needed
         ];
