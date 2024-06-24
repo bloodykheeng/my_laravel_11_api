@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ThirdPartyAuthProvider;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\ThirdPartyAuthProvider;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Role;
 
 /**
  * @OA\Tag(
@@ -29,7 +29,7 @@ class AuthController extends Controller
             'role' => 'required|exists:roles,name', // Validate that the role exists
             // 'vendor_id' => 'nullable|exists:vendors,id',
             'phone' => 'required|string|regex:/^\+\d{12}$/', // Validate phone number with country code
-            'dateOfBirth' => 'required|date',
+            'date_of_birth' => 'required|date',
             'agree' => 'required|boolean',
         ]);
 
@@ -45,7 +45,7 @@ class AuthController extends Controller
                 'status' => $request->status,
                 'password' => Hash::make($request->password),
                 'phone' => $request->phone,
-                'dateOfBirth' => $request->dateOfBirth,
+                'date_of_birth' => $request->date_of_birth,
                 'agree' => $request->agree,
             ]);
 
@@ -97,7 +97,7 @@ class AuthController extends Controller
             'permissions' => $user->getAllPermissions()->pluck('name'), // pluck for simplified array
             'role' => $user->getRoleNames()->first() ?? "",
             'phone' => $user->phone,
-            'dateOfBirth' => $user->dateOfBirth,
+            'date_of_birth' => $user->date_of_birth,
             'agree' => $user->agree,
         ];
 
@@ -141,7 +141,7 @@ class AuthController extends Controller
             'permissions' => $user->getAllPermissions()->pluck('name'),
             'role' => $user->getRoleNames()->first() ?? "",
             'phone' => $user->phone,
-            'dateOfBirth' => $user->dateOfBirth,
+            'date_of_birth' => $user->date_of_birth,
             'agree' => $user->agree,
         ];
 
@@ -156,7 +156,6 @@ class AuthController extends Controller
 
         return response()->json($response);
     }
-
 
     public function thirdPartyLoginAuthentication(Request $request)
     {
@@ -401,7 +400,6 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
 
     // method for user logout and delete token
     public function logout()

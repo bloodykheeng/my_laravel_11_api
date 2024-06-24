@@ -28,7 +28,8 @@ class User extends Authenticatable
         'photo_url',
         'agree',
         'phone',
-        'dateOfBirth',
+        'date_of_birth',
+        'gender',
     ];
 
     /**

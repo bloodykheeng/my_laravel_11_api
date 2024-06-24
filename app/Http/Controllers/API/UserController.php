@@ -56,7 +56,7 @@ class UserController extends Controller
     //     }
     // }
 
-    $query->latest(); 
+    $query->latest();
     // Pagination
     $perPage = $request->query('per_page', 10); // Default to 10 per page
     $page = $request->query('page', 1); // Default to first page
@@ -105,7 +105,8 @@ class UserController extends Controller
             'phone' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'status' => 'required|string|max:255',
-            'dateOfBirth' => 'required|date',
+            'date_of_birth' => 'required|date',
+            'gender' => 'nullable|string|max:255',
             'lastlogin' => 'nullable|date',
             'password' => 'required|string|min:8',
             'role' => 'required|exists:roles,name',
@@ -127,7 +128,8 @@ class UserController extends Controller
                 'name' => $validatedData['name'],
                 'phone' => $validatedData['phone'],
                 'email' => $validatedData['email'],
-                'dateOfBirth' => $validatedData['dateOfBirth'],
+                'date_of_birth' => $validatedData['date_of_birth'],
+                'gender' => $validatedData['gender'],
                 'status' => $validatedData['status'],
                 'lastlogin' => $validatedData['lastlogin'] ?? now(),
                 'password' => Hash::make($validatedData['password']),
@@ -179,7 +181,8 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'phone' => 'required|string|max:255',
             'status' => 'required|string|max:255',
-            'dateOfBirth' => 'required|date',
+            'gender' => 'nullable|string|max:255',
+            'date_of_birth' => 'required|date',
             'lastlogin' => 'nullable|date',
             'photo' => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Validation for photo
             'role' => 'sometimes|exists:roles,name',
@@ -211,7 +214,8 @@ class UserController extends Controller
                 'name' => $validatedData['name'],
                 'phone' => $validatedData['phone'],
                 'email' => $validatedData['email'],
-                'dateOfBirth' => $validatedData['dateOfBirth'],
+                'date_of_birth' => $validatedData['date_of_birth'],
+                'gender' => $validatedData['gender'],
                 'status' => $validatedData['status'],
                 'lastlogin' => $validatedData['lastlogin'] ?? now(),
                 'photo_url' => $photoUrl,

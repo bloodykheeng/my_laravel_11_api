@@ -26,8 +26,9 @@ return new class extends Migration
 
             // New fields
             $table->boolean('agree')->default(false);
-            $table->string('phone')->nullable();
-            $table->date('dateOfBirth')->nullable(); // This is correct
+            $table->string('phone')->nullable()->unique();
+            $table->string('gender')->nullable();
+            $table->date('date_of_birth')->nullable(); // This is correct
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
