@@ -126,10 +126,10 @@ class UserController extends Controller
             // Create user
             $user = User::create([
                 'name' => $validatedData['name'],
-                'phone' => $validatedData['phone'],
+                'phone' => $validatedData['phone'] ?? null,
                 'email' => $validatedData['email'],
-                'date_of_birth' => $validatedData['date_of_birth'],
-                'gender' => $validatedData['gender'],
+                'date_of_birth' => $validatedData['date_of_birth'] ?? null,
+                'gender' => $validatedData['gender'] ?? null,
                 'status' => $validatedData['status'],
                 'lastlogin' => $validatedData['lastlogin'] ?? now(),
                 'password' => Hash::make($validatedData['password']),
@@ -179,10 +179,10 @@ class UserController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-            'phone' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:255',
             'status' => 'required|string|max:255',
             'gender' => 'nullable|string|max:255',
-            'date_of_birth' => 'required|date',
+            'date_of_birth' => 'nullable|date',
             'lastlogin' => 'nullable|date',
             'photo' => 'nullable|file|mimes:jpg,jpeg,png|max:2048', // Validation for photo
             'role' => 'sometimes|exists:roles,name',
@@ -212,10 +212,10 @@ class UserController extends Controller
         try {
             $user->update([
                 'name' => $validatedData['name'],
-                'phone' => $validatedData['phone'],
+                'phone' => $validatedData['phone'] ?? null,
                 'email' => $validatedData['email'],
-                'date_of_birth' => $validatedData['date_of_birth'],
-                'gender' => $validatedData['gender'],
+                'date_of_birth' => $validatedData['date_of_birth'] ?? null,
+                'gender' => $validatedData['gender'] ?? null,
                 'status' => $validatedData['status'],
                 'lastlogin' => $validatedData['lastlogin'] ?? now(),
                 'photo_url' => $photoUrl,
