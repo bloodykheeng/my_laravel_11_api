@@ -28,12 +28,12 @@ class RolesAndPermissionsSeeder extends Seeder
                 'delete permissions on roles',
                 'view permissions',
             ],
-            // 'Health Facility Manager' => [
-            //     'view',
-            //     'create',
-            //     'update',
-            //     'delete',
-            // ],
+            'Editor' => [
+                'view',
+                'create',
+                'update',
+                'delete',
+            ],
             // 'Patient' => [
             //     'view',
             //     'create',

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,11 +45,13 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h3>Your password has been reset successfully!</h3>
         <p>You can now log in using your new password.</p>
-       <a href="{{ env('FRONTEND_URL') }}">Go to Login</a>
+        <a href="{{ env('FRONTEND_URL') }}">Go to Login</a>
     </div>
 </body>
+
 </html>

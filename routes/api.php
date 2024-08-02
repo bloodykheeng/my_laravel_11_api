@@ -13,7 +13,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 //check if user is still logged in
 // Route::get('/user', [AuthController::class, 'checkLoginStatus']);
-Route::middleware('auth:sanctum')->get('/user', [AuthController::class, 'checkLoginStatus']);
+// Route::middleware('auth:sanctum')->get('/user', [AuthController::class, 'checkLoginStatus']);
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/third-party-login-auth', [AuthController::class, 'thirdPartyLoginAuthentication'])->name('thirdPartyLoginAuthentication');
@@ -36,8 +36,15 @@ Route::group(
         //======================== User Management =================================
         Route::Resource('users', UserController::class);
 
+        Route::get('get-logged-in-user', [AuthController::class, 'checkLoginStatus']);
+
         //Roles AND Permisions
         Route::get('/roles', [UserRolesController::class, 'getAssignableRoles']);
+
+          // Sync permision to roles
+          Route::get('roles-with-modified-permissions', [UserRolesController::class, 'getRolesWithModifiedPermissions']);
+
+          Route::post('sync-permissions-to-role', [UserRolesController::class, 'syncPermissionsToRole']);
 
         Route::Resource('users-roles', UserRolesController::class);
         Route::Post('users-roles-addPermissionsToRole', [UserRolesController::class, 'addPermissionsToRole']);
